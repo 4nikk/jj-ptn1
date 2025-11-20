@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karaoke Web: Temanku Semua Pada Jahat Tante</title>
+    <style>
+        /* CSS untuk Tampilan */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #1a1a2e; /* Background gelap */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+
+        #lirik-container {
+            font-size: 2.2em;
+            font-weight: bold;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #2e2e4e;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .judul {
+            font-size: 0.8em;
+            color: #99aab5;
+            margin-bottom: 25px;
+        }
+
+        /* Lirik yang muncul */
+        .baris-lirik {
+            opacity: 0.3; /* Lirik sebelumnya/berikutnya agak redup */
+            transition: opacity 0.5s ease-in-out, color 0.5s ease-in-out;
+            margin: 15px 0;
+        }
+
+        /* Lirik yang sedang aktif (bernyanyi) */
+        .active {
+            opacity: 1;
+            color: #ff6347; /* Warna merah cerah untuk lirik aktif */
+            text-shadow: 0 0 5px rgba(255, 99, 71, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+<div id="lirik-container">
+    <div class="judul">🎤 Lirik Sinkronisasi: [00:00:00] - [00:00:26] 🎤</div>
+</div>
+
+<script>
+    // Data Lirik dan Sinkronisasi Tempo (dalam milidetik)
+    // Menggunakan data delay dari kode Python sebelumnya
+    const lirikData = [
+        // Stanza 1 - Mulai ~[00:00:00]
+        { text: "temanku semua pada jahat tante", delay: 3000 },
+        { text: "aku lagi susah mereka gak ada", delay: 3000 },
+        { text: "coba kalo lagi jaya", delay: 3500 },
+        { text: "aku dipuja pujanya tante", delay: 4000 },
+        
+        // Stanza 2 - Mulai ~[00:00:17]
+        { text: "sudah terbiasa terjadi tante", delay: 3000 },
+        { text: "teman datang ketika lagi butuh saja", delay: 3000 },
+        { text: "coba kalo lagi susah", delay: 3500 },
+        { text: "mereka semua menghilang", delay: 5000 }
+    ];
+
+    let indexLirik = 0;
+    const container = document.getElementById('lirik-container');
+    
+    // Inisialisasi: Tambahkan semua lirik ke DOM, tapi sembunyikan semua
+    function inisialisasiLirik() {
+        lirikData.forEach((item, index) => {
+            const newBaris = document.createElement('div');
+            newBaris.className = 'baris-lirik';
+            newBaris.id = `lirik-${index}`;
+            newBaris.textContent = item.text;
+            container.appendChild(newBaris);
+        });
+    }
+
+    // Fungsi untuk menampilkan satu baris lirik (Karaoke Effect)
+    function tampilkanBaris() {
+        // Hapus kelas 'active' dari lirik sebelumnya
+        const prevIndex = indexLirik - 1;
+        if (prevIndex >= 0) {
+            document.getElementById(`lirik-${prevIndex}`).classList.remove('active');
+        }
+
+        if (indexLirik < lirikData.length) {
+            // Aktifkan lirik saat ini
+            const currentLirikElement = document.getElementById(`lirik-${indexLirik}`);
+            currentLirikElement.classList.add('active');
+
+            // Jadwalkan baris berikutnya
+            const delay = lirikData[indexLirik].delay;
+            indexLirik++;
+            setTimeout(tampilkanBaris, delay);
+        } else {
+            // Lagu Selesai
+            setTimeout(() => {
+                const finalMsg = document.createElement('div');
+                finalMsg.className = 'judul';
+                finalMsg.style.color = '#76b900';
+                finalMsg.textContent = "=== Lagu Selesai ===";
+                container.appendChild(finalMsg);
+            }, 2000);
+        }
+    }
+
+    // Mulai inisialisasi dan jalankan lagu
+    inisialisasiLirik();
+    // Tunggu 2 detik sebelum mulai tampilkan lirik pertama
+    setTimeout(tampilkanBaris, 2000); 
+</script>
+
+</body>
+</html>
